@@ -1,6 +1,7 @@
 use std::env;
 use dotenv::dotenv;
 use tokio_postgres::{NoTls, Client, Error};
+use crate::utils::models::Person;
 
 pub async fn establish_connection() -> Result<Client, Error> {
     dotenv().ok();
@@ -18,5 +19,21 @@ pub async fn establish_connection() -> Result<Client, Error> {
 pub async fn create_person(client: &Client, name: &str, last_name: &str, age: i32) -> Result<(), Error> {
     client.execute("INSERT INTO persons (name, last_name, age) VALUES ($1, $2, $3)",&[&name, &last_name, &age],).await?;
     Ok(())
+}
+
+pub async fn read_persons(client: &Client) -> Result<Vec<Person>, Error> {
+    let stmt = client.prepare("SELECT id, name, last_name, age FROM persons").await?;
+    let rows = client.query(&stmt, &[]).await?;
+
+    let mut persons = vec![];
+    for row in &rows {
+        let id: i32 = row.get(0);
+        let name: String = row.get(1);
+        let last_name: String = row.get(2);
+        let age: i32 = row.get(3);
+        persons.push(Person { id, name, last_name, age });
+    }
+
+    Ok(persons)
 }
 

@@ -1,7 +1,7 @@
 
 pub struct Person {
-    id: i32,
-    name: String,
-    last_name: String,
-    age: i32
+    pub id: i32,
+    pub name: String,
+    pub last_name: String,
+    pub age: i32
 }
