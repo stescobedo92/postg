@@ -37,3 +37,8 @@ pub async fn read_persons(client: &Client) -> Result<Vec<Person>, Error> {
     Ok(persons)
 }
 
+pub async fn update_person(client: &Client, id: i32, new_age: i32) -> Result<(), Error> {
+    client.execute("UPDATE persons SET age = $1 WHERE id = $2",&[&new_age, &id]).await?;
+    Ok(())
+}
+
