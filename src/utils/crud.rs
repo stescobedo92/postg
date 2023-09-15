@@ -42,3 +42,8 @@ pub async fn update_person(client: &Client, id: i32, new_age: i32) -> Result<(),
     Ok(())
 }
 
+pub async fn delete_person(client: &Client, id: i32) -> Result<(), Error> {
+    client.execute("DELETE FROM persons WHERE id = $1", &[&id]).await?;
+    Ok(())
+}
+
